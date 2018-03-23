@@ -141,7 +141,8 @@ target_link_libraries(talker ${catkin_LIBRARIES})
 add_executable(listener src/listener.cpp)
 target_link_libraries(listener ${catkin_LIBRARIES})
 
-
+add_executable(ten src/ten.cpp)
+target_link_libraries(ten ${catkin_LIBRARIES})
 
 
 
