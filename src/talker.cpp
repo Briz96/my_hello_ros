@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 // %EndTag(FILL_MESSAGE)%
 
 // %Tag(ROSCONSOLE)%
-    ROS_INFO("%s", msg.data.c_str());
+   ROS_INFO("I send: [%s]", msg.data.c_str());
 // %EndTag(ROSCONSOLE)%
 
     /**

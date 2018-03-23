@@ -28,19 +28,43 @@
 // %Tag(FULLTEXT)%
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include <sstream>
 
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
  */
 // %Tag(CALLBACK)%
+ ros::Publisher filtered_pub;
+int count=0;
+int countM=0;
 void chatterCallback(const std_msgs::String::ConstPtr& msg)
-{
-  ROS_INFO("I heard: [%s]", msg->data.c_str());
+{  
+	ROS_INFO("I heard: [%s]", msg->data.c_str());
+	countM++;
+	if(countM==10)
+	{
+	count++;
+    	std_msgs::String msg;
+
+    	std::stringstream ss;
+    	ss << "hello world " << count;
+    	msg.data = ss.str();
+
+    	ROS_INFO("I send: [%s]", msg.data.c_str());
+
+        filtered_pub.publish(msg);
+    
+
+	countM=0;
+
+    	//ros::spinOnce();
 }
-// %EndTag(CALLBACK)%
+}
+
 
 int main(int argc, char **argv)
 {
+	
   /**
    * The ros::init() function needs to see argc and argv so that it can perform
    * any ROS arguments and name remapping that were provided at the command line.
@@ -51,18 +75,18 @@ int main(int argc, char **argv)
    * You must call one of the versions of ros::init() before using any other
    * part of the ROS system.
    */
-  ros::init(argc, argv, "listener");
+   ros::init(argc, argv, "listener");
 
   /**
    * NodeHandle is the main access point to communications with the ROS system.
    * The first NodeHandle constructed will fully initialize this node, and the last
    * NodeHandle destructed will close down the node.
    */
-  ros::NodeHandle n;
+   ros::NodeHandle n;
 
   /**
    * The subscribe() call is how you tell ROS that you want to receive messages
-   * on a given topic.  This invokes a call to the ROS
+   * on a given topic.  This invokes a call to the ROS#include <sstream>#include <sstream>
    * master node, which keeps a registry of who is publishing and who
    * is subscribing.  Messages are passed to a callback function, here
    * called chatterCallback.  subscribe() returns a Subscriber object that you
@@ -75,20 +99,22 @@ int main(int argc, char **argv)
    * is the number of messages that will be buffered up before beginning to throw
    * away the oldest ones.
    */
-// %Tag(SUBSCRIBER)%
-  ros::Subscriber sub = n.subscribe("chatter", 1000, chatterCallback);
-// %EndTag(SUBSCRIBER)%
+   ros::Subscriber sub = n.subscribe("chatter", 1000, chatterCallback);	
+
+   filtered_pub= n.advertise<std_msgs::String>("filtered", 1000);
+
+  
+  
 
   /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all
    * callbacks will be called from within this thread (the main one).  ros::spin()
    * will exit when Ctrl-C is pressed, or the node is shutdown by the master.
    */
-// %Tag(SPIN)%
-  ros::spin();
-// %EndTag(SPIN)%
+   ros::spin();
 
-  return 0;
+
+   return 0;
 }
 // %EndTag(FULLTEXT)%
 
